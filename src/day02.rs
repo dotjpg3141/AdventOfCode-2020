@@ -16,7 +16,8 @@ pub fn run() -> Result<(), Box<dyn Error>> {
 }
 
 struct PasswordRecord {
-    range: RangeInclusive<usize>,
+    start: usize,
+    end: usize,
     c: char,
     password: String,
 }
@@ -24,7 +25,7 @@ struct PasswordRecord {
 impl PasswordRecord {
     fn is_valid(&self) -> bool {
         let count = self.password.chars().filter(|&c| c == self.c).count();
-        self.range.contains(&count)
+        (self.start..=self.end).contains(&count)
     }
 }
 
@@ -40,7 +41,8 @@ impl FromStr for PasswordRecord {
         let password = split.next().expect("password").parse::<String>()?;
 
         Ok(PasswordRecord {
-            range: start..=end,
+            start,
+            end,
             c,
             password,
         })
