@@ -1,4 +1,4 @@
-use std::{error::Error, fs::File, io::BufRead, io::BufReader, ops::RangeInclusive, str::FromStr};
+use std::{error::Error, fs::File, io::BufRead, io::BufReader, str::FromStr};
 
 pub fn run() -> Result<(), Box<dyn Error>> {
     let file = File::open("./input/input02.txt")?;
@@ -9,8 +9,11 @@ pub fn run() -> Result<(), Box<dyn Error>> {
         .map(|line| -> Result<_, Box<dyn Error>> { Ok(line?.parse::<PasswordRecord>()?) })
         .collect::<Result<Vec<_>, _>>()?;
 
-    let valid_count = entries.iter().filter(|record| record.is_valid()).count();
+    let valid_count = entries.iter().filter(|record| record.is_valid_a()).count();
     println!("Day 2a: {}", valid_count);
+
+    let valid_count = entries.iter().filter(|record| record.is_valid_b()).count();
+    println!("Day 2b: {}", valid_count);
 
     Ok(())
 }
@@ -23,9 +26,15 @@ struct PasswordRecord {
 }
 
 impl PasswordRecord {
-    fn is_valid(&self) -> bool {
+    fn is_valid_a(&self) -> bool {
         let count = self.password.chars().filter(|&c| c == self.c).count();
         (self.start..=self.end).contains(&count)
+    }
+
+    fn is_valid_b(&self) -> bool {
+        let c1 = self.password.chars().nth(self.start - 1);
+        let c2 = self.password.chars().nth(self.end - 1);
+        (c1 == Some(self.c)) ^ (c2 == Some(self.c))
     }
 }
 
