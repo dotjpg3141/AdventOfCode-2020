@@ -82,23 +82,23 @@ impl Passport {
     }
 
     fn is_valid_b(&self) -> bool {
-        validate_number(self.byr.as_ref(), 4, 1920, 2002)
-            && validate_number(self.iyr.as_ref(), 4, 2010, 2020)
-            && validate_number(self.eyr.as_ref(), 4, 2020, 2030)
-            && validate_height(self.hgt.as_ref())
-            && validate_hex_color(self.hcl.as_ref())
-            && validate_eye_color(self.ecl.as_ref())
-            && validate_number(self.pid.as_ref(), 9, 0, i32::MAX)
+        let validate = || -> Option<bool> {
+            let is_valid = true
+                && validate_number(self.byr.as_ref()?, 4, 1920, 2002)
+                && validate_number(self.iyr.as_ref()?, 4, 2010, 2020)
+                && validate_number(self.eyr.as_ref()?, 4, 2020, 2030)
+                && validate_height(self.hgt.as_ref()?)
+                && validate_hex_color(self.hcl.as_ref()?)
+                && validate_eye_color(self.ecl.as_ref()?)
+                && validate_number(self.pid.as_ref()?, 9, 0, i32::MAX);
+            Some(is_valid)
+        };
+
+        validate().unwrap_or_default()
     }
 }
 
-fn validate_number(item: Option<&String>, len: usize, min: i32, max: i32) -> bool {
-    let item = if let Some(item) = item {
-        item
-    } else {
-        return false;
-    };
-
+fn validate_number(item: &str, len: usize, min: i32, max: i32) -> bool {
     if item.len() != len {
         return false;
     }
@@ -111,13 +111,7 @@ fn validate_number(item: Option<&String>, len: usize, min: i32, max: i32) -> boo
     min <= num && num <= max
 }
 
-fn validate_height(item: Option<&String>) -> bool {
-    let item = if let Some(item) = item {
-        item
-    } else {
-        return false;
-    };
-
+fn validate_height(item: &str) -> bool {
     if item.len() < 3 {
         return false;
     }
@@ -136,13 +130,7 @@ fn validate_height(item: Option<&String>) -> bool {
     }
 }
 
-fn validate_hex_color(item: Option<&String>) -> bool {
-    let item = if let Some(item) = item {
-        item
-    } else {
-        return false;
-    };
-
+fn validate_hex_color(item: &str) -> bool {
     if item.len() != 7 || item.chars().next() != Some('#') {
         return false;
     }
@@ -150,14 +138,8 @@ fn validate_hex_color(item: Option<&String>) -> bool {
     item.chars().skip(1).all(|c| c.is_ascii_hexdigit())
 }
 
-fn validate_eye_color(item: Option<&String>) -> bool {
-    let item = if let Some(item) = item {
-        item
-    } else {
-        return false;
-    };
-
-    match item.as_str() {
+fn validate_eye_color(item: &str) -> bool {
+    match item {
         "amb" => true,
         "blu" => true,
         "brn" => true,
