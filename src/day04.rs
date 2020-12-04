@@ -116,7 +116,7 @@ fn validate_height(item: &str) -> bool {
         return false;
     }
 
-    let (num, unit) = item.split_at(item.len() - 2); // NOTE(jpg): asuming ascii input only
+    let (num, unit) = item.split_at(item.len() - 2); // NOTE(jpg): assuming ascii input only
 
     let num = match num.parse::<i32>() {
         Ok(num) => num,
