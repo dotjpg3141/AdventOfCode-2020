@@ -1,15 +1,9 @@
-use std::{
-    collections::HashMap, collections::HashSet, error::Error, fs::File, io::BufRead, io::BufReader,
-};
+use std::{collections::HashMap, collections::HashSet, error::Error};
+
+use crate::parse_lines;
 
 pub fn run() -> Result<(), Box<dyn Error>> {
-    let file = File::open("./input/input05.txt")?;
-    let reader = BufReader::new(file);
-
-    let seats = reader
-        .lines()
-        .map(|line| -> Result<_, Box<dyn Error>> { Ok(determine_seat_position(line?.as_str())) })
-        .collect::<Result<Vec<_>, _>>()?;
+    let seats = parse_lines(5, |line| determine_seat_position(&line))?;
 
     let seat_id = seats
         .iter()

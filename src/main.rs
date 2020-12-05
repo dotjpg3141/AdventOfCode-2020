@@ -25,3 +25,31 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 }
+
+fn try_parse_lines<T, E>(
+    day: u32,
+    f: impl Fn(String) -> Result<T, E>,
+) -> Result<Vec<T>, Box<dyn Error>>
+where
+    E: Into<Box<dyn Error>>,
+{
+    use std::{fs::File, io::BufRead, io::BufReader};
+
+    let path = format!("./input/input{:0>2}.txt", day);
+
+    let file = File::open(path)?;
+    let reader = BufReader::new(file);
+
+    let entries = reader
+        .lines()
+        .map(|line| -> Result<_, Box<dyn Error>> { Ok(f(line?).map_err(|e| e.into())?) })
+        .collect::<Result<Vec<_>, _>>()?;
+
+    Ok(entries)
+}
+
+fn parse_lines<T>(day: u32, f: impl Fn(String) -> T) -> Result<Vec<T>, Box<dyn Error>> {
+    try_parse_lines(day, |line| -> Result<T, std::convert::Infallible> {
+        Ok(f(line))
+    })
+}

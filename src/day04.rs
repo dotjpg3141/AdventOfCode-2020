@@ -1,15 +1,13 @@
-use std::{error::Error, fs::File, io::BufRead, io::BufReader};
+use std::error::Error;
+
+use crate::parse_lines;
 
 pub fn run() -> Result<(), Box<dyn Error>> {
-    let file = File::open("./input/input04.txt")?;
-    let reader = BufReader::new(file);
-
     let mut passport = Passport::default();
     let mut valid_a_count = 0;
     let mut valid_b_count = 0;
 
-    for line in reader.lines() {
-        let line = line?;
+    for line in parse_lines(4, |line| line)? {
         if line.is_empty() {
             if passport.is_valid_a() {
                 valid_a_count += 1;

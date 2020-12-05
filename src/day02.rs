@@ -1,13 +1,9 @@
-use std::{error::Error, fs::File, io::BufRead, io::BufReader, str::FromStr};
+use std::{error::Error, str::FromStr};
+
+use crate::try_parse_lines;
 
 pub fn run() -> Result<(), Box<dyn Error>> {
-    let file = File::open("./input/input02.txt")?;
-    let reader = BufReader::new(file);
-
-    let entries = reader
-        .lines()
-        .map(|line| -> Result<_, Box<dyn Error>> { Ok(line?.parse::<PasswordRecord>()?) })
-        .collect::<Result<Vec<_>, _>>()?;
+    let entries = try_parse_lines(2, |line| line.parse::<PasswordRecord>())?;
 
     let valid_count = entries.iter().filter(|record| record.is_valid_a()).count();
     println!("Day 2a: {}", valid_count);

@@ -1,13 +1,9 @@
-use std::{error::Error, fs::File, io::BufRead, io::BufReader};
+use std::error::Error;
+
+use crate::try_parse_lines;
 
 pub fn run() -> Result<(), Box<dyn Error>> {
-    let file = File::open("./input/input01.txt")?;
-    let reader = BufReader::new(file);
-
-    let entries = reader
-        .lines()
-        .map(|line| -> Result<_, Box<dyn Error>> { Ok(line?.parse::<u64>()?) })
-        .collect::<Result<Vec<_>, _>>()?;
+    let entries = try_parse_lines(1, |line| line.parse::<u64>())?;
 
     let mut result = None;
     'outer1: for (idx_a, a) in entries.iter().copied().enumerate() {

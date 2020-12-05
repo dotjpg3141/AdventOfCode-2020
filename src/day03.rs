@@ -1,15 +1,9 @@
-use std::{error::Error, fs::File, io::BufRead, io::BufReader};
+use std::error::Error;
+
+use crate::parse_lines;
 
 pub fn run() -> Result<(), Box<dyn Error>> {
-    let file = File::open("./input/input03.txt")?;
-    let reader = BufReader::new(file);
-
-    let map = reader
-        .lines()
-        .map(|line| -> Result<_, Box<dyn Error>> {
-            Ok(line?.chars().map(|c| c == '#').collect::<Vec<_>>())
-        })
-        .collect::<Result<Vec<_>, _>>()?;
+    let map = parse_lines(3, |line| line.chars().map(|c| c == '#').collect::<Vec<_>>())?;
 
     let height = map.len();
     let width = map[0].len();
