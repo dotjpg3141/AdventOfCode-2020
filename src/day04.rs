@@ -80,6 +80,7 @@ impl Passport {
     }
 
     fn is_valid_b(&self) -> bool {
+        #[allow(clippy::nonminimal_bool)]
         let validate = || -> Option<bool> {
             let is_valid = true
                 && validate_number(self.byr.as_ref()?, 4, 1920, 2002)
@@ -129,7 +130,7 @@ fn validate_height(item: &str) -> bool {
 }
 
 fn validate_hex_color(item: &str) -> bool {
-    if item.len() != 7 || item.chars().next() != Some('#') {
+    if item.len() != 7 || !item.starts_with('#') {
         return false;
     }
 
