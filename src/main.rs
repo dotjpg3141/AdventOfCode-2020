@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, iter::repeat, time::Instant};
 
 mod day01;
 mod day02;
@@ -28,6 +28,42 @@ fn main() -> Result<(), Box<dyn Error>> {
             for day in &days {
                 day()?;
             }
+            Ok(())
+        }
+        ["perf"] => {
+            let mut performance = Vec::new();
+            for day in &days {
+                let start = Instant::now();
+                day()?;
+                performance.push(start.elapsed().as_millis());
+            }
+            println!();
+
+            let max_duration = performance.iter().copied().max().expect("non-empty").max(1);
+            let duration_per_char = 80.0 / max_duration as f64;
+            for (idx, duration) in performance.iter().enumerate() {
+                let char_count = ((*duration as f64) * duration_per_char) as usize;
+                let marker = repeat('+').take(char_count).collect::<String>();
+                println!("Day {:>2 }: {}", idx + 1, marker);
+            }
+            println!();
+
+            for (idx, duration) in performance.iter().enumerate() {
+                println!("Day {:>2 }: {:>6} ms", idx + 1, duration);
+            }
+            println!();
+
+            println!("Worst performance");
+            let mut worst_peformance = performance.iter().enumerate().collect::<Vec<_>>();
+            worst_peformance.sort_by_key(|(_, duration)| -(**duration as i64));
+            for (idx, duration) in worst_peformance.into_iter().take(3) {
+                println!("Day {:>2 }: {:>6} ms", idx + 1, duration);
+            }
+            println!();
+
+            let total_duration = performance.iter().sum::<u128>();
+            println!("Total: {:>6} ms", total_duration);
+
             Ok(())
         }
         _ => {
