@@ -6,6 +6,7 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day07;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = std::env::args().skip(1).collect::<Vec<_>>();
@@ -18,6 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         day04::run,
         day05::run,
         day06::run,
+        day07::run,
     ];
 
     match args.as_slice() {
