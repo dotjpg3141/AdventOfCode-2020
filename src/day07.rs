@@ -15,6 +15,9 @@ pub fn run() -> Result<(), Box<dyn Error>> {
 
     println!("Day 7a: {}", result);
 
+    let result = count_bag_recursive(&rules, "shiny gold") - 1;
+    println!("Day 7b: {}", result);
+
     Ok(())
 }
 
@@ -30,6 +33,14 @@ fn contains_bag_recursive(
     rules[current_bag]
         .iter()
         .any(|(_, bag)| contains_bag_recursive(rules, bag, target))
+}
+
+fn count_bag_recursive(rules: &HashMap<String, Vec<(usize, String)>>, current_bag: &str) -> usize {
+    rules[current_bag]
+        .iter()
+        .map(|(count, bag)| count * count_bag_recursive(rules, bag))
+        .sum::<usize>()
+        + 1
 }
 
 fn parse_rule(s: &str) -> (String, Vec<(usize, String)>) {
